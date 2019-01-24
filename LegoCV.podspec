@@ -13,12 +13,15 @@ LegoCV is native OpenCV framework built for Swift and Objective-C projects. It e
   s.author           = { 'Dal Rupnik' => 'legoless@gmail.com' }
   s.source           = { :git => 'https://github.com/legoless/legocv.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/thelegoless'
-
+  s.swift_version    = '4.2'
+  
   s.ios.deployment_target = '8.0'
   s.osx.deployment_target = '10.13'
 
   s.public_header_files = 'LegoCV/LegoCV/LegoCV.h'
   s.source_files = 'LegoCV/LegoCV/LegoCV.h'
+
+  s.ios.xcconfig = { "OTHER_LDFLAGS" => '$(inherited) -framework "opencv2"', "FRAMEWORK_SEARCH_PATHS" => '${PODS_ROOT}/OpenCV', "ENABLE_BITCODE" => 'NO'}
 
   s.subspec 'Core' do |subspec|
     subspec.public_header_files = 'LegoCV/LegoCV/Wrapper/Core/**/*.h', 'LegoCV/LegoCV/Wrapper/Utilities/**/*.h', 
