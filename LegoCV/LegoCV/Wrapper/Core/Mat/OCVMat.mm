@@ -89,11 +89,46 @@
     return [self initWithMatInstance:&mat];
 }
 
+#if TARGET_OS_IPHONE
 - (instancetype)initWithImage:(UIImage *)image {
     cv::Mat mat = [self.class matFromImage:image];
     
     return [self initWithMatInstance:&mat];
 }
+
+
+- (UIImage *)image {
+    CGImageRef imageRef = [self imageRef];
+    
+    return [UIImage imageWithCGImage:imageRef];
+}
+
+
++ (cv::Mat)matFromImage:(UIImage *)image {
+    CGColorSpaceRef colorSpace = CGImageGetColorSpace(image.CGImage);
+    CGFloat cols = image.size.width;
+    CGFloat rows = image.size.height;
+    
+    cv::Mat cvMat(rows, cols, CV_8UC4);
+    
+    CGContextRef contextRef = CGBitmapContextCreate(
+                                                    cvMat.data,                 // Pointer to  data
+                                                    cols,                       // Width of bitmap
+                                                    rows,                       // Height of bitmap
+                                                    8,                          // Bits per component
+                                                    cvMat.step[0],              // Bytes per row
+                                                    colorSpace,                 // Colorspace
+                                                    kCGImageAlphaNoneSkipLast|kCGBitmapByteOrderDefault // Bitmap info flags
+                                                    );
+    
+    CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), image.CGImage);
+    CGContextRelease(contextRef);
+    CGColorSpaceRelease(colorSpace);
+    
+    return cvMat;
+}
+
+#endif
 
 - (instancetype)initWithImageRef:(CGImageRef)imageRef {
     cv::Mat mat = [self.class matFromImageRef:imageRef];
@@ -137,12 +172,6 @@
     }
     
     return [self.class imageRefFromMat:*(self.source)];
-}
-
-- (UIImage *)image {
-    CGImageRef imageRef = [self imageRef];
-    
-    return [UIImage imageWithCGImage:imageRef];
 }
 
 - (OCVMat *)reshapeWithChannels:(NSInteger)channels {
@@ -261,29 +290,6 @@
 }
 
 
-+ (cv::Mat)matFromImage:(UIImage *)image {
-    CGColorSpaceRef colorSpace = CGImageGetColorSpace(image.CGImage);
-    CGFloat cols = image.size.width;
-    CGFloat rows = image.size.height;
-    
-    cv::Mat cvMat(rows, cols, CV_8UC4);
-    
-    CGContextRef contextRef = CGBitmapContextCreate(
-                                                    cvMat.data,                 // Pointer to  data
-                                                    cols,                       // Width of bitmap
-                                                    rows,                       // Height of bitmap
-                                                    8,                          // Bits per component
-                                                    cvMat.step[0],              // Bytes per row
-                                                    colorSpace,                 // Colorspace
-                                                    kCGImageAlphaNoneSkipLast|kCGBitmapByteOrderDefault // Bitmap info flags
-                                                    );
-    
-    CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), image.CGImage);
-    CGContextRelease(contextRef);
-    CGColorSpaceRelease(colorSpace);
-    
-    return cvMat;
-}
 
 + (cv::Mat)matFromBuffer:(CVPixelBufferRef)buffer {
     size_t cols = CVPixelBufferGetWidth(buffer);
