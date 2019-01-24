@@ -15,6 +15,7 @@ LegoCV is native OpenCV framework built for Swift and Objective-C projects. It e
   s.social_media_url = 'https://twitter.com/thelegoless'
 
   s.ios.deployment_target = '8.0'
+  s.osx.deployment_target = '10.13'
 
   s.public_header_files = 'LegoCV/LegoCV/LegoCV.h'
   s.source_files = 'LegoCV/LegoCV/LegoCV.h'
@@ -23,7 +24,6 @@ LegoCV is native OpenCV framework built for Swift and Objective-C projects. It e
     subspec.public_header_files = 'LegoCV/LegoCV/Wrapper/Core/**/*.h', 'LegoCV/LegoCV/Wrapper/Utilities/**/*.h', 
     subspec.private_header_files = 'LegoCV/LegoCV/Wrapper/Core/Private/*.h'
     subspec.source_files = 'LegoCV/LegoCV/Wrapper/Core/**/*.{h,m,mm}', 'LegoCV/LegoCV/Wrapper/Utilities/**/*.{h,m,mm}'
-    subspec.dependency 'OpenCV-Dynamic'
   end
 
   s.subspec 'ImageProcessing' do |subspec|
@@ -33,5 +33,4 @@ LegoCV is native OpenCV framework built for Swift and Objective-C projects. It e
     subspec.dependency 'LegoCV/Core'
   end
   
-  s.frameworks = 'UIKit'
 end
